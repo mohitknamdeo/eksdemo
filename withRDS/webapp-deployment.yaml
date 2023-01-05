@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: webapp-deploy
+spec:
+  repilcas: 3
+  selector:
+    matchLabels:
+      name: webapp
+  template:
+    containers:
+      - name: webapp
+        image: 
+

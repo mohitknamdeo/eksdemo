@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      # initContainers:
+      #  - name: db-check
+      #    image: busybox:1.31
+      #    command: ["sleep","3000"]
+      containers:
+        - name: webapp
+          image: mohitknamdeo/mywebapp:1.0
+            #env:
+            #- name: DB_HOST
+            #  value: "mysql"
+            #- name: DB_PORT
+            #  value: "3306"
+            #- name: DB_USERNAME
+            #  value: "root"
+            #- name: DB_NAME
+            #  value: "db1"
+            #- name: DB_PASSWORD
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: rds-db-pass
+            #      key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  labels:
+    app: webapp
+spec:
+  selector:
+    app: webapp
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+
+
