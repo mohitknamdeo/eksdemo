@@ -18,7 +18,10 @@ spec:
       #    command: ["sleep","3000"]
       containers:
         - name: webapp
-          image: mohitknamdeo/mywebapp:1.0
+          image: 276780518338.dkr.ecr.ap-south-1.amazonaws.com/recommendations-service-qa:recommendation-qa-v4.0
+          imagePullPolicy: Always
+      imagePullSecrets:
+      - name: repo-cred
             #env:
             #- name: DB_HOST
             #  value: "mysql"

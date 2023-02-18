@@ -12,6 +12,11 @@ metadata:
     alb.ingress.kubernetes.io/success-codes: '200'
 spec:
   ingressClassName: alb-ingress-class
+  defaultBackend:
+    service:
+      name: webapp3-nodeport-service
+      port:
+        number: 80
   rules:
     - http:
         paths:
@@ -27,13 +32,6 @@ spec:
             backend:
               service:
                 name: webapp2-nodeport-service
-                port:
-                  number: 80
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: webapp3-nodeport-service
                 port:
                   number: 80
 

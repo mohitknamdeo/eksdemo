@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: webapp3
-          image: mohitknamdeo/mywebapp:3.0
+          image: mohitknamdeo/mywebapp:6.0
           ports: 
             - containerPort: 80
 ---
@@ -26,7 +26,7 @@ metadata:
   labels:
     app: webapp3
   annotations:
-    alb.ingress.kubernetes.io/healthcheck-path: /index.html
+    alb.ingress.kubernetes.io/healthcheck-path: /index.php
 spec:
   type: NodePort
   selector:
