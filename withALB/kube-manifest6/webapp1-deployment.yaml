@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendations-service-qa-deployment1
+  namespace: secret-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp1
+  template:
+    metadata:
+      name: webapp1
+      labels:
+        app: webapp1
+    spec:
+      serviceAccountName: demo-sa
+        # volumes:
+        # - name: app-config
+        #  csi:
+        #    driver: secrets-store.csi.k8s.io
+        #    readOnly: true
+        #    volumeAttributes:
+        #      secretProviderClass: secret-provider-class
+      containers:
+        - name: recommendations-service-qa
+          image: 276780518338.dkr.ecr.ap-south-1.amazonaws.com/recommendations-service-qa:recommendation-qa-withoutconfig
+          ports:
+            - containerPort: 80
+              # volumeMounts:
+              # - name: app-config
+              # mountPath: /app/config/
+              # readOnly: true
+              #  env:
+              # - name: ENV_DATA
+              # valueFrom:
+              # secretKeyRef:
+              #  name: appconfig
+              #  key: env-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deploy1-nodeport-service
+  namespace: secret-demo
+  labels:
+    app: webapp1
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /recommendations-api-qa/
+spec:
+  type: NodePort
+  selector:
+    app: webapp1
+  ports:
+    - port: 80
+      targetPort: 80

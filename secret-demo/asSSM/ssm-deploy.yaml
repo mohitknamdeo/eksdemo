@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx3
+  namespace: secret-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: demo-sa
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: my-app-parameter
+          mountPath: /mnt/app/conf
+          readOnly: true
+        env:
+        - name: APP_CONF
+          valueFrom:
+            secretKeyRef:
+              name: app-conf
+              key: env-conf
+      volumes:
+      - name: my-app-parameter
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: sp3-class

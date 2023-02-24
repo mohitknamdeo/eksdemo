@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  namespace: secret-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: demo-sa
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: my-dbcreds
+          mountPath: /mnt/dbcreds
+          readOnly: true
+        env:
+        - name: DB_CREDS
+          valueFrom:
+            secretKeyRef:
+              name: dbcreds
+              key: username
+      volumes:
+      - name: my-dbcreds
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: myspc
+

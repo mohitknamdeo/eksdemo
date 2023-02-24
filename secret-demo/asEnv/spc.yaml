@@ -1,0 +1,18 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: myspc
+  namespace: secret-demo
+spec:
+  provider: aws
+  secretObjects:
+  - secretName: dbcreds
+    type: Opaque
+    data: 
+    - objectName: dbuser
+      key: username
+  parameters:
+    objects: |
+      - objectName: DB_secrets
+        objectType: secretsmanager
+        objectAlias: dbuser
