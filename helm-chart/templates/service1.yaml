@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Chart.Name}}-service1
+  namespace: {{.Values.NameSpace}}
+  labels:
+    app: webapp1
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: {{.Values.Service.Annotation}} #/recommendations-api-qa/
+spec:
+  type: {{.Values.Service.Type}} #NodePort
+  selector:
+    app: webapp1
+  ports:
+    - port: {{.Values.Service.Port}}
+      targetPort: {{.Values.Service.TargetPort}}
+

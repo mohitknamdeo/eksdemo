@@ -26,11 +26,11 @@ spec:
       data:
       - objectName: SQL_USER
         key: SQL_USER
-    - secretName: version
+    - secretName: albtag
       type: Opaque
       data:
-      - objectName: VERSION
-        key: VERSION
+      - objectName: ALB_TAG
+        key: ALB_TAG
     - secretName: sqldb
       type: Opaque
       data:
@@ -53,33 +53,33 @@ spec:
         key: MONGO_URL
   parameters:
     objects: |
-      - objectName: "env"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/ENV"
+        objectType: "ssmparameter"
         objectAlias: ENV
-      - objectName: "envtag"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/ENV_TAG"
+        objectType: "ssmparameter"
         objectAlias: ENV_TAG
-      - objectName: "mongo"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/MONGO_CONFIG_URL"
+        objectType: "ssmparameter"
         objectAlias: MONGO_URL
-      - objectName: "sqlhost"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/SQL_HOST"
+        objectType: "ssmparameter"
         objectAlias: SQL_HOST
-      - objectName: "sqldb"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/SQL_DB"
+        objectType: "ssmparameter"
         objectAlias: SQL_DB
-      - objectName: "sqluser"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/SQL_USER"
+        objectType: "ssmparameter"
         objectAlias: SQL_USER
-      - objectName: "sqlpass"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/SQL_PASSWORD"
+        objectType: "ssmparameter"
         objectAlias: SQL_PASSWORD
-      - objectName: "token"
-        objectType: "secretsmanager"
+      - objectName: "/recommendation/qa/ecs/VALIDATE_TOKEN_API"
+        objectType: "ssmparameter"
         objectAlias: VALIDATION_TOKEN_API
-      - objectName: "version"
-        objectType: "secretsmanager"
-        objectAlias: VERSION
+      - objectName: "/recommendation/qa/ecs/ALB_TAG"
+        objectType: "ssmparameter"
+        objectAlias: ALB_TAG
 
 
 

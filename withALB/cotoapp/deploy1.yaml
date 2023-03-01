@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recommendations-service-qa-deployment1
-  namespace: secret-demo
+  namespace: dev
 spec:
   replicas: 1
   selector:
@@ -14,7 +14,7 @@ spec:
       labels:
         app: webapp1
     spec:
-      serviceAccountName: demo-sa
+      serviceAccountName: dev-sa
       volumes:
         - name: app-config
           csi:
@@ -25,6 +25,7 @@ spec:
       containers:
         - name: recommendations-service-qa
           image:  276780518338.dkr.ecr.ap-south-1.amazonaws.com/recommendations-service-qa:recommendation-qa-withoutconfig
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           volumeMounts:
@@ -32,17 +33,58 @@ spec:
               mountPath: /app/from/secrets/config
               readOnly: true
           env:
-            - name: ENV_DATA
+            - name: ENV
               valueFrom:
                 secretKeyRef:
-                  name: appconfig
-                  key: env-data
+                  name: env
+                  key: ENV
+            - name: ENV_TAG
+              valueFrom:
+                secretKeyRef:
+                  name: envtag
+                  key: ENV_TAG
+            - name: VERSION
+              valueFrom:
+                secretKeyRef:
+                  name: version
+                  key: VERSION
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongourl
+                  key: MONGO_URL
+            - name: SQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: host
+                  key: SQL_HOST
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sqlpass
+                  key: SQL_PASSWORD
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: SQL_USER
+            - name: SQL_DB
+              valueFrom:
+                secretKeyRef:
+                  name: sqldb
+                  key: SQL_DB
+            - name: VALIDATION_TOKEN_API
+              valueFrom:
+                secretKeyRef:
+                  name: token
+                  key: VALIDATION_TOKEN_API
+          
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: deploy1-nodeport-service
-  namespace: secret-demo
+  namespace: dev
   labels:
     app: webapp1
   annotations:

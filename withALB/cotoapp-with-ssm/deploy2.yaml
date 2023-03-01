@@ -42,11 +42,11 @@ spec:
                 secretKeyRef:
                   name: envtag
                   key: ENV_TAG
-            - name: VERSION
+            - name: ALB_TAG
               valueFrom:
                 secretKeyRef:
-                  name: version
-                  key: VERSION
+                  name: albtag
+                  key: ALB_TAG
             - name: MONGO_URL
               valueFrom:
                 secretKeyRef:

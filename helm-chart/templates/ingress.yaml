@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alb-ingress
+  namespace: {{.Values.NameSpace}} #dev
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: {{.Values.Ingress.Annotation.LBName}} #eks-alb-ingress
+    alb.ingress.kubernetes.io/scheme: {{.Values.Ingress.Annotation.Scheme}} #internet-facing
+    alb.ingress.kubernetes.io/healthcheck-protocol: {{.Values.Ingress.Annotation.HealthCheckProtocol}} #HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: {{.Values.Ingress.Annotation.HealthCheckPort}} #traffic-port
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: {{.Values.Ingress.Annotation.IntervalSeconds}} #'15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: {{.Values.Ingress.Annotation.TimeoutSeconds}} #'5'
+    alb.ingress.kubernetes.io/success-codes: {{.Values.Ingress.Annotation.SuccessCode}} 
+    #alb.ingress.kubernetes.io/tags: {{.Values.Ingress.Annotation.ALBTag}} #'qa'
+    #alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+spec:
+  ingressClassName: {{.Values.Ingress.ClassName}} #alb-ingress-class
+  rules:
+    - http:
+        paths:
+          - path: {{.Values.Ingress.Rule.Path1}} #/recommendations-api-qa/docs
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Chart.Name}}-service1 # deploy2-nodeport-service
+                port:
+                  number: 80
+          - path: {{.Values.Ingress.Rule.Path2}} #/recommendations-api-qa/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Chart.Name}}-service2  #deploy1-nodeport-service
+                port:
+                  number: 80
+

@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: recommendations-service-qa-deployment2
-  namespace: dev
+  name: {{ .Chart.Name}}-deployment2 #recommendations-service-qa-deployment2
+  namespace: {{ .Values.NameSpace}} #dev
 spec:
-  replicas: 1
+  replicas: {{.Values.ReplicaCount}} #1
   selector:
     matchLabels:
       app: webapp2
@@ -14,22 +14,23 @@ spec:
       labels:
         app: webapp2
     spec:
-      serviceAccountName: dev-sa
+      serviceAccountName: {{.Values.ServiceAccount.Name}} #dev-sa
       volumes:
-      - name: app-config
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: secret-provider-class
+        - name: {{.Values.Volume.Name}}
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{.Values.SecretProvider.ClassName}} #secret-provider-class
       containers:
-        - name: recommendations-service-qa
-          image: 276780518338.dkr.ecr.ap-south-1.amazonaws.com/recommendations-service-qa:recommendation-qa-withoutconfig-v1
+        - name: {{.Chart.Name}} #
+          image: {{.Values.Image.RepositoryName}}:{{.Values.Image.Tag}} #276780518338.dkr.ecr.ap-south-1.amazonaws.com/recommendations-service-qa:recommendation-qa-withoutconfig
+          imagePullPolicy: {{.Values.Image.PullPolicy}}
           ports:
-            - containerPort: 80
+            - containerPort: {{.Values.Container.Port}}
           volumeMounts:
-            - name: app-config
-              mountPath: /app/from/secrets/config
+            - name: {{.Values.Volume.Name}}
+              mountPath: {{.Values.Volume.MountPath}}
               readOnly: true
           env:
             - name: ENV
@@ -42,11 +43,6 @@ spec:
                 secretKeyRef:
                   name: envtag
                   key: ENV_TAG
-            - name: VERSION
-              valueFrom:
-                secretKeyRef:
-                  name: version
-                  key: VERSION
             - name: MONGO_URL
               valueFrom:
                 secretKeyRef:
@@ -72,27 +68,9 @@ spec:
                 secretKeyRef:
                   name: sqldb
                   key: SQL_DB
-            - name: VALIDATION_TOKEN_API
+            - name: VALIDATION_API_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: token
-                  key: VALIDATION_TOKEN_API
-
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: deploy2-nodeport-service
-  namespace: dev
-  labels:
-    app: webapp2
-  annotations:
-    alb.ingress.kubernetes.io/healthcheck-path: /recommendations-api-qa/
-spec:
-  type: NodePort
-  selector:
-    app: webapp2
-  ports:
-    - port: 80
-      targetPort: 80
+                  key: VALIDATION_API_TOKEN
+          

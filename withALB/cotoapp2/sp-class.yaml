@@ -1,0 +1,19 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: secret-provider-class
+  namespace: dev
+spec:
+  provider: aws
+  secretObjects:
+  - secretName: appconfig
+    type: Opaque
+    data:
+    - objectName: app.config
+      key: env-data
+  parameters:
+    objects: |
+      - objectName: appconfig3
+        objectType: secretsmanager
+        objectAlias: app.config
+
